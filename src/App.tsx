@@ -1,26 +1,19 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {Navbar} from "./layouts/navbar-and-footer/Navbar";
+import {ExploreTopBooks} from "./layouts/home-page/components/ExploreTopBooks";
+import {Carousel} from "./layouts/home-page/components/Carousel";
+import {Heroes} from "./layouts/home-page/components/Heroes";
+import {LibraryServices} from "./layouts/home-page/components/LibraryServices";
+import {Footer} from "./layouts/navbar-and-footer/Footer";
+import {HomePage} from "./layouts/home-page/HomePage";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export const App = () => {
+    return (
+        <div>
+            <Navbar/>
+            <HomePage/>
+            <Footer/>
+        </div>
+    );
 }
-
-export default App;
