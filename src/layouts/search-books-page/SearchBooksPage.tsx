@@ -1,17 +1,23 @@
 import {useEffect, useState} from "react";
 import {BookModel} from "../../models/BookModel";
 import {SpinnerLoading} from "../utils/SpinnerLoading";
+import {SearchBook} from "./components/SearchBook";
+import {Pagination} from "../utils/Pagination";
 
 export const SearchBooksPage = () => {
 
     const [books, setBooks] = useState<BookModel[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [booksPerPage, setBooksPerPage] = useState(5);
+    const [totalAmountOfBooks, setTotalAmountOfBooks] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
 
     useEffect(() => {
         const fetchBooks = async () => {
             const baseUrl: string = "http://localhost:8080/api/books";
-            const url: string = `${baseUrl}?page=0&size=5`;
+            const url: string = `${baseUrl}?page=${currentPage - 1}&size=${booksPerPage}`;
             const respone = await fetch(url);
             if (!respone.ok) {
                 throw new Error("Failed to fetch books!");
@@ -21,6 +27,9 @@ export const SearchBooksPage = () => {
             //INFO pobieramy listę books z jsona responsa
             //      (jest tam obiekt _embedded zawierający listę books
             const responseData = responseJson._embedded.books;
+            setTotalAmountOfBooks(responseJson.page.totalElements);
+            setTotalPages(responseJson.page.totalPages);
+
             const loadedBooks: BookModel[] = [];
             for (const key in responseData) {
                 loadedBooks.push({
@@ -56,6 +65,14 @@ export const SearchBooksPage = () => {
             </div>
         )
     }
+
+    const indexOfLastBook: number = currentPage * booksPerPage;
+    const indexOfFirstBook: number = indexOfLastBook - booksPerPage;
+    let lastItem = booksPerPage * currentPage <= totalAmountOfBooks ?
+        booksPerPage * currentPage : totalAmountOfBooks;
+
+    const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
     return (
         <div>
             <div className="container">
@@ -113,8 +130,11 @@ export const SearchBooksPage = () => {
                         1 to 5 of 22 items
                     </p>
                     {books.map(book => (
-                        <SearchBooks book={book} key={book.id} />
+                        <SearchBook book={book} key={book.id} />
                     ))}
+                    {totalPages > 1 &&
+                        <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate}/>
+                    }
                 </div>
             </div>
         </div>
