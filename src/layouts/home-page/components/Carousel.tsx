@@ -1,8 +1,9 @@
-import {ReturnBook} from "./ReturnBook";
-import {useState} from "react";
-import {useEffect} from "react";
-import {BookModel} from "../../../models/BookModel";
-import {SpinnerLoading} from "../../utils/SpinnerLoading";
+import {ReturnBook} from './ReturnBook';
+import {useState} from 'react';
+import {useEffect} from 'react';
+import {BookModel} from '../../../models/BookModel';
+import {SpinnerLoading} from '../../utils/SpinnerLoading';
+import {NavLink} from 'react-router-dom';
 
 
 export const Carousel = () => {
@@ -11,15 +12,15 @@ export const Carousel = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
-    /** INFO: useEffect może być wzbudzane wielokrotnie, więc jest używany do sprawdzania "stanu".
+    /** INFO: useEffect może być wzbudzane wielokrotnie, więc jest używany do sprawdzania 'stanu'.
         Po każdej zmianie stanu może być wzbudzany ponownie, żeby np. przeładować coś na stronie*/
     useEffect(() => {
         const fetchBooks = async () => {
-            const baseUrl: string = "http://localhost:8080/api/books";
+            const baseUrl: string = 'http://localhost:8080/api/books';
             const url: string = `${baseUrl}?page=0&size=9`;
             const respone = await fetch(url);
             if (!respone.ok) {
-                throw new Error("Failed to fetch books!");
+                throw new Error('Failed to fetch books!');
             }
             const responseJson = await respone.json();//INFO: pobieramy jsona z responsa
             const responseData = responseJson._embedded.books;//INFO pobieramy listę books z jsona responsa
@@ -53,7 +54,7 @@ export const Carousel = () => {
 
     if (httpError) {
         return (
-            <div className="container m-5">
+            <div className='container m-5'>
                 <p>{httpError}</p>
             </div>
         )
@@ -62,7 +63,7 @@ export const Carousel = () => {
     return (
         <div className='container mt-5' style={{height: 550}}>
             <div className='homepage-carousel-title'>
-                <h3>Find your next "I stayed up too late reading" book.</h3>
+                <h3>Find your next 'I stayed up too late reading' book.</h3>
             </div>
             <div id='carouselExampleControls' className='carousel carousel-dark slide mt-5 d-none d-lg-block'
                  data-bs-interval='false'>
@@ -109,7 +110,7 @@ export const Carousel = () => {
                 </div>
             </div>
             <div className='homepage-carousel-title mt-3'>
-                <a className='btn btn-outline-secondary btn-lg' href='#'>View more</a>
+                <NavLink className='btn btn-outline-secondary btn-lg' to='/search'>View more</NavLink>
             </div>
         </div>
     );
