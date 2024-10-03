@@ -2,7 +2,7 @@ import {ReturnBook} from './ReturnBook';
 import {useState} from 'react';
 import {useEffect} from 'react';
 import {BookModel} from '../../../models/BookModel';
-import {SpinnerLoading} from '../../utils/SpinnerLoading';
+import {SpinnerLoading} from '../../Utils/SpinnerLoading';
 import {NavLink} from 'react-router-dom';
 
 
