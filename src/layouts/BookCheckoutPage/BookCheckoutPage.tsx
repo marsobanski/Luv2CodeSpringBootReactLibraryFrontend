@@ -3,20 +3,29 @@ import {BookModel} from '../../models/BookModel';
 import {SpinnerLoading} from '../Utils/SpinnerLoading';
 import {StarsReview} from '../Utils/StarsReview';
 import {CheckoutAndReviewBox} from './CheckoutAndReviewBox';
+import {ReviewModel} from '../../models/ReviewModel';
+import {LatestReviews} from './LatestReviews';
 
 export const BookCheckoutPage = () => {
 
+    //book state
     const [book, setBook] = useState<BookModel>();
     const [isLoading, setIsLoading] = useState(true);
     const [httpError, setHttpError] = useState(null);
 
+    //review state
+    const [reviews, setReviews] = useState<ReviewModel[]>();
+    const [totalStars, setTotalStars] = useState(0);
+    const [isLoadingReview, setIsLoadingReview] = useState(true);
+
     //INFO: window.location.pathname zwraca url, poniżej pobieramy
     //      trzecią pozycję z urla rozdzielonego po '/'
     const bookId = (window.location.pathname).split('/')[2];
+    const baseUrl = 'http://localhost:8080/api';
 
     useEffect(() => {
         const fetchBook = async () => {
-            const url: string = `http://localhost:8080/api/books/${bookId}`;
+            const url: string = `${baseUrl}/books/${bookId}`;
             const respone = await fetch(url);
             if (!respone.ok) {
                 throw new Error('Failed to fetch book!');
@@ -41,7 +50,44 @@ export const BookCheckoutPage = () => {
         })
     }, [bookId]);
 
-    if (isLoading) {
+    useEffect(() => {
+        const fetchBookReviews = async () => {
+            const reviewUrl: string = `${baseUrl}/reviews/search/findByBookId?bookId=${bookId}`;
+            const respone = await fetch(reviewUrl);
+            if (!respone.ok) {
+                throw new Error('Somethign went wrong');
+            }
+            const jsonReviews = await respone.json();
+            const responseData = jsonReviews._embedded.reviews;
+            const loadedReviews: ReviewModel[] = [];
+            let weightedStarsReview: number = 0;
+            for (const key in responseData) {
+                loadedReviews.push({
+                    id: responseData[key].id,
+                    userEmail: responseData[key].userEmail,
+                    date: responseData[key].date,
+                    rating: responseData[key].rating,
+                    bookId: responseData[key].bookId,
+                    reviewDescription: responseData[key].reviewDescription
+                });
+                weightedStarsReview = weightedStarsReview = responseData[key].rating;
+            }
+            if (loadedReviews) {
+                //INFO: zaokrąglanie do 0,5 (ale nie czaję jak)
+                const round = (Math.round((weightedStarsReview / loadedReviews.length) * 2) / 2).toFixed(1);
+                setTotalStars(Number(round));
+            }
+            setReviews(loadedReviews);
+            setIsLoadingReview(false);
+        };
+
+        fetchBookReviews().catch((error: any) => {
+            setIsLoadingReview(false);
+            setHttpError(error.message)
+        })
+    }, [bookId]);
+
+    if (isLoading || isLoadingReview) {
         return (
             <SpinnerLoading/>
         )
@@ -78,6 +124,7 @@ export const BookCheckoutPage = () => {
                     <CheckoutAndReviewBox book={book} mobile={false}/>
                 </div>
                 <hr/>
+                <LatestReviews reviews={reviews} bookId={book?.id} mobile={false}/>
             </div>
             <div className="container d-lg-none mt-5">
                 <div className="d-flex justify-content-center align-items-center">
@@ -98,6 +145,7 @@ export const BookCheckoutPage = () => {
                 </div>
                 <CheckoutAndReviewBox book={book} mobile={true}/>
                 <hr/>
+                <LatestReviews reviews={reviews} bookId={book?.id} mobile={true}/>
             </div>
         </div>
     )
