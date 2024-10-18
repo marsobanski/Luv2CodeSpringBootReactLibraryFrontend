@@ -6,8 +6,8 @@ export const oktaConfig = {
     //      npm install @okta/okta-react@6.4.3
     clientId: '0oakbvlikiEE3X6SO5d7',
     issuer:'https://dev-26581089.okta.com/oauth2/default',
-    redirectUri: 'http://localhost:3000/logic/callback',
-    scopes: ['openId', 'profile', 'email'],
+    redirectUri: 'http://localhost:3000/login/callback',
+    scopes: ['openid', 'profile', 'email'],
     pkce: true,
     disableHttpCheck: true,
 }

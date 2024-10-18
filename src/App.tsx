@@ -11,6 +11,8 @@ import {OktaAuth, toRelativeUrl} from '@okta/okta-auth-js'
 import {LoginWidget} from './authentication/LoginWidget';
 import {LoginCallback, Security} from '@okta/okta-react';
 
+const oktaAuth = new OktaAuth(oktaConfig);
+
 export const App = () => {
 
     const customAuthHandler = () => {
@@ -22,19 +24,17 @@ export const App = () => {
         history.replace(toRelativeUrl(originalUri || '/', window.location.origin))
     }
 
-    const oktaAuth = new OktaAuth(oktaConfig)
-
     return (
         <div className="d-flex flex-column min-vh-100">
             <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri} onAuthRequired={customAuthHandler}>
                 <Navbar/>
                 <div className="flex-grow-1">
                     {/*INFO: Switch sprawia, że renderujemy tylko pierwszą
-            spełniającą warunek stronę*/}
+                        spełniającą warunek stronę*/}
                     <Switch>
                         {/*INFO: 'exact' oznacza, że komponent będzie się renderował tylko
-                na dokładnie tym endpoincie. Bez tego przy '/search' warunek '/'
-                też jest spełniony, a więc '/' też by się renderowało*/}
+                            na dokładnie tym endpoincie. Bez tego przy '/search' warunek '/'
+                            też jest spełniony, a więc '/' też by się renderowało*/}
                         <Route path="/" exact>
                             <Redirect to="/home"/>
                         </Route>
@@ -51,7 +51,7 @@ export const App = () => {
                             () => <LoginWidget config={oktaConfig}/>
                         }
                         />
-                        <Route path="/login/cvallback" component={LoginCallback}/>
+                        <Route path="/login/callback" component={LoginCallback}/>
                     </Switch>
                 </div>
                 <Footer/>

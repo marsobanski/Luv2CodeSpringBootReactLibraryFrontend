@@ -3,7 +3,7 @@ import OktaSignIn from '@okta/okta-signin-widget';
 import '@okta/okta-signin-widget/dist/css/okta-sign-in.min.css';
 import { oktaConfig} from '../lib/oktaConfig';
 
-export const OktaSigninWidget = ({ onSuccess, onError }) => {
+const OktaSigninWidget = ({ onSuccess, onError }) => {
     const widgetRef = useRef();
 
     useEffect(() => {
@@ -26,3 +26,5 @@ export const OktaSigninWidget = ({ onSuccess, onError }) => {
             </div>
     )
 }
+
+export default OktaSigninWidget;
