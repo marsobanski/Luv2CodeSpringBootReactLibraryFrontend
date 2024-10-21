@@ -110,7 +110,7 @@ export const Carousel = () => {
                 </div>
             </div>
             <div className='homepage-carousel-title mt-3'>
-                <NavLink className='btn btn-outline-secondary btn-lg' to='/search'>View more</NavLink>
+                <NavLink className='btn btn-outline-secondary btn-lg' to='search'>View more</NavLink>
             </div>
         </div>
     );

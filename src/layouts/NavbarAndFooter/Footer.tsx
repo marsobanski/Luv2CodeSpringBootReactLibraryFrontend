@@ -10,12 +10,12 @@ export const Footer = () => {
                 </p>
                 <ul className='nav navbar-dark col-md-4 justify-content-end'>
                     <li className='nav-item'>
-                        <Link onClick={() => window.scrollTo(0, 0)} to='/home' className='nav-link px-2 text-white'>
+                        <Link onClick={() => window.scrollTo(0, 0)} to='home' className='nav-link px-2 text-white'>
                             Home
                         </Link>
                     </li>
                     <li className='nav-item'>
-                        <Link to='/search' className='nav-link px-2 text-white'>
+                        <Link to='search' className='nav-link px-2 text-white'>
                             Search books
                         </Link>
                     </li>

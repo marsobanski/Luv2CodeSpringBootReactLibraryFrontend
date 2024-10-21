@@ -8,7 +8,7 @@ export const ExploreTopBooks = () => {
                 <div>
                     <h1 className='display-5 fw-bold'>Find your nex adventure</h1>
                     <p className='col-md-8 fs-4'>Where would you like to go next?</p>
-                    <Link className='btn main-color btn-lg text-white' type='button' to='/search'>Explore top books</Link>
+                    <Link className='btn main-color btn-lg text-white' type='button' to='search'>Explore top books</Link>
                 </div>
             </div>
         </div>
