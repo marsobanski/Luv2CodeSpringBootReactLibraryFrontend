@@ -12,7 +12,7 @@ export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobil
             } else if (props.isCheckedOut) {
                 return (<p><b>Book checked out. Enjoy</b></p>)
             } else if (!props.isCheckedOut) {
-                return (<p className="text-danger">Too many books checked out. Return some books before new checkouts</p>)
+                return (<p className="text-danger"><b>Too many books checked out.</b></p>)
             }
         }
         return (<Link to={'/login'} className="btn btn-success btn-lg">Sing in</Link>)
@@ -30,11 +30,11 @@ export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobil
                     {props.book && props.book.copiesAvailable && props.book.copiesAvailable > 0 ?
                         <h4 className="text-success">Available</h4>
                         :
-                        <h4 className="text-danger">Wait List</h4>
+                        <h4 className="text-danger">Waiting List</h4>
                     }
                     <div className="row">
                         <p className="col-12 lead">
-                            <b>{props.book?.copiesAvailable} / {props.book?.copies} </b>
+                            <b>{props.book?.copiesAvailable} / {props.book?.copies}</b>
                         </p>
                     </div>
                 </div>

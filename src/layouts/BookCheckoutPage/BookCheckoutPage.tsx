@@ -84,7 +84,7 @@ export const BookCheckoutPage = () => {
                     date: responseData[key].date,
                     rating: responseData[key].rating,
                     bookId: responseData[key].bookId,
-                    reviewDescription: responseData[key].reviewDescription
+                    description: responseData[key].description
                 });
                 weightedStarsReview = weightedStarsReview = responseData[key].rating;
             }
