@@ -18,8 +18,8 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-dark main-color py-3">
             <div className="container-fluid">
-            <span className="navbar-brand">
-                Library
+            <span>
+                <Link to='/home' className="navbar-brand">Library</Link>
             </span>
                 <button className="navbar-toggler" type="button"
                         data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
@@ -31,10 +31,10 @@ export const Navbar = () => {
                 <div className="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="home">Home</NavLink>
+                            <NavLink className="nav-link" to="/home">Home</NavLink>
                         </li>
                         <li className="nav-item">
-                            <NavLink className="nav-link" to="search">Search books</NavLink>
+                            <NavLink className="nav-link" to="/search">Search books</NavLink>
                         </li>
                     </ul>
                     <ul className="navbar-nav ms-auto">
