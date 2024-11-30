@@ -19,7 +19,9 @@ export const BookCheckoutPage = () => {
     //review state
     const [reviews, setReviews] = useState<ReviewModel[]>();
     const [totalStars, setTotalStars] = useState(0);
-    const [isLoadingReview, setIsLoadingReview] = useState(true);
+    const [isLoadingReviews, setIsLoadingReviews] = useState(true);
+    const [isBookReviewed, setIsBookReviewed] = useState(false)
+    const [isLoadingUserReview, setIsLoadingUserReview] = useState(true)
 
     //loans count state
     const [currentLoansCount, setCurrentLoansCount] = useState(0);
@@ -94,14 +96,41 @@ export const BookCheckoutPage = () => {
                 setTotalStars(Number(round));
             }
             setReviews(loadedReviews);
-            setIsLoadingReview(false);
+            setIsLoadingReviews(false);
         };
 
         fetchBookReviews().catch((error: any) => {
-            setIsLoadingReview(false);
+            setIsLoadingReviews(false);
             setHttpError(error.message)
         })
     }, [bookId]);
+
+    // is book reviewed by user
+    useEffect(() => {
+        const bookReviewedByUser = async () => {
+            if (authState  && authState.isAuthenticated) {
+                const url = `${baseUrl}/reviews/secure/user/book?bookId=${bookId}`;
+                const requestOptions = {
+                    method: 'GET',
+                    headers: {
+                        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                }
+                const userRevieweResponse = await fetch(url, requestOptions);
+                if (!userRevieweResponse.ok) {
+                    throw new Error("Something went wrong")
+                }
+                const bookReviewed = await userRevieweResponse.json();
+                setIsBookReviewed(bookReviewed);
+            }
+            setIsLoadingUserReview(false);
+        }
+        bookReviewedByUser().catch((error: any) => {
+            setIsLoadingUserReview(false);
+            setHttpError(error.message)
+        })
+    }, [authState, bookId, isBookReviewed]);
 
     // fetch user current loans count
     useEffect(() => {
@@ -157,7 +186,8 @@ export const BookCheckoutPage = () => {
         })
     }, [authState, bookId, isCheckedOut]);
 
-    if (isLoading || isLoadingReview || isLoadingCurrentLoansCount || isLoadingBookCheckedOut) {
+    if (isLoading || isLoadingReviews || isLoadingCurrentLoansCount
+        || isLoadingBookCheckedOut || isLoadingUserReview) {
         return (
             <SpinnerLoading/>
         )
@@ -213,7 +243,8 @@ export const BookCheckoutPage = () => {
                                           currentLoansCount={currentLoansCount}
                                           isAuthenticated={authState?.isAuthenticated}
                                           isCheckedOut={isCheckedOut}
-                                          checkoutBook={checkoutBook}/>
+                                          checkoutBook={checkoutBook}
+                                          isReviewed={isBookReviewed}/>
                 </div>
                 <hr/>
                 <LatestReviews reviews={reviews} bookId={book?.id} mobile={false}/>
@@ -242,7 +273,8 @@ export const BookCheckoutPage = () => {
                     isAuthenticated={authState?.isAuthenticated}
                     isCheckedOut={isCheckedOut}
                     //przekazujemy metodę do wypożyczania w props
-                    checkoutBook={checkoutBook}/>
+                    checkoutBook={checkoutBook}
+                    isReviewed={isBookReviewed}/>
                 <hr/>
                 <LatestReviews reviews={reviews} bookId={book?.id} mobile={true}/>
             </div>

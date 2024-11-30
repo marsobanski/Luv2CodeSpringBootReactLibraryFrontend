@@ -2,13 +2,16 @@ import React from 'react';
 import {BookModel} from '../../models/BookModel';
 import {Link} from 'react-router-dom';
 
-export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobile: boolean, currentLoansCount: number,
-    isAuthenticated: any, isCheckedOut: boolean, checkoutBook: any}> = (props) => {
+export const CheckoutAndReviewBox: React.FC<{
+    book: BookModel | undefined, mobile: boolean, currentLoansCount: number,
+    isAuthenticated: any, isCheckedOut: boolean, checkoutBook: any, isReviewed: boolean
+}> = (props) => {
 
     function buttonRender() {
         if (props.isAuthenticated) {
             if (!props.isCheckedOut && props.currentLoansCount < 5) {
-                return (<button onClick={() => props.checkoutBook()} className="btn btn-success btn-lg">Checkout</button>)
+                return (
+                    <button onClick={() => props.checkoutBook()} className="btn btn-success btn-lg">Checkout</button>)
             } else if (props.isCheckedOut) {
                 return (<p><b>Book checked out. Enjoy</b></p>)
             } else if (!props.isCheckedOut) {
@@ -16,6 +19,17 @@ export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobil
             }
         }
         return (<Link to={'/login'} className="btn btn-success btn-lg">Sing in</Link>)
+    }
+
+    function reviewRender() {
+        if (props.isAuthenticated && !props.isReviewed) {
+            return (<p>Leave reviewe component here</p>)
+        } else if (props.isAuthenticated && props.isReviewed) {
+            return (<p><b>Thank you for your review</b></p>)
+        }
+        return (<div>
+            <h1><p>Sign in to leave review</p></h1>
+        </div>)
     }
 
     return (
@@ -43,9 +57,7 @@ export const CheckoutAndReviewBox: React.FC<{ book: BookModel | undefined, mobil
                 <p className="mp-3">
                     This number can change until placing order has been complete.
                 </p>
-                <p>
-                    Sign in to leave a review
-                </p>
+                {reviewRender()}
             </div>
         </div>
     )
