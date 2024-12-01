@@ -6,7 +6,7 @@ export const Review: React.FC<{ review: ReviewModel }> = (props)  => {
 
     const date = new Date(props.review.date);
     const loanMonth = date.toLocaleString('pl-pl', {month: 'long'});
-    const dateDay = date.getDay();
+    const dateDay = date.getDay() + 1;
     const dateYear = date.getFullYear();
     const dateRender = loanMonth + ' ' + dateDay + ', ' + dateYear;
 

@@ -6,6 +6,7 @@ import {CheckoutAndReviewBox} from './CheckoutAndReviewBox';
 import {ReviewModel} from '../../models/ReviewModel';
 import {LatestReviews} from './LatestReviews';
 import {useOktaAuth} from '@okta/okta-react';
+import {ReviewRequestModel} from '../../models/ReviewRequestModel';
 
 
 export const BookCheckoutPage = () => {
@@ -70,7 +71,7 @@ export const BookCheckoutPage = () => {
     // fetch book reviews
     useEffect(() => {
         const fetchBookReviews = async () => {
-            const reviewUrl: string = `${baseUrl}/reviews/search/findByBookId?bookId=${bookId}`;
+            const reviewUrl: string = `${baseUrl}/reviews/search/findByBookIdOrderByDateDesc?bookId=${bookId}`;
             const respone = await fetch(reviewUrl);
             if (!respone.ok) {
                 throw new Error('Somethign went wrong');
@@ -88,7 +89,7 @@ export const BookCheckoutPage = () => {
                     bookId: responseData[key].bookId,
                     description: responseData[key].description
                 });
-                weightedStarsReview = weightedStarsReview = responseData[key].rating;
+                weightedStarsReview = weightedStarsReview + responseData[key].rating;
             }
             if (loadedReviews) {
                 //INFO: zaokrąglanie do 0,5 (ale nie czaję jak)
@@ -103,7 +104,7 @@ export const BookCheckoutPage = () => {
             setIsLoadingReviews(false);
             setHttpError(error.message)
         })
-    }, [bookId]);
+    }, [bookId, isBookReviewed]);
 
     // is book reviewed by user
     useEffect(() => {
@@ -218,6 +219,29 @@ export const BookCheckoutPage = () => {
         setIsCheckedOut(true);
     }
 
+    //submit review
+    async function submitReview(starInput:number, description: string) {
+        let bookId: number = 0;
+        if (book?.id) {
+            bookId = book.id;
+        }
+        const reviewRequestModel = new ReviewRequestModel(starInput, bookId, description)
+        const url = `${baseUrl}/reviews/secure`
+        const requestOptions = {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(reviewRequestModel)
+        };
+        const returnResponse = await fetch(url, requestOptions)
+        if (!returnResponse.ok) {
+            throw new Error('Something went wrong');
+        }
+        setIsBookReviewed(true);
+    }
+
     return (
         <div>
             <div className='container d-none d-lg-block'>
@@ -244,7 +268,8 @@ export const BookCheckoutPage = () => {
                                           isAuthenticated={authState?.isAuthenticated}
                                           isCheckedOut={isCheckedOut}
                                           checkoutBook={checkoutBook}
-                                          isReviewed={isBookReviewed}/>
+                                          isReviewed={isBookReviewed}
+                                          submitReview={submitReview}/>
                 </div>
                 <hr/>
                 <LatestReviews reviews={reviews} bookId={book?.id} mobile={false}/>
@@ -274,7 +299,8 @@ export const BookCheckoutPage = () => {
                     isCheckedOut={isCheckedOut}
                     //przekazujemy metodę do wypożyczania w props
                     checkoutBook={checkoutBook}
-                    isReviewed={isBookReviewed}/>
+                    isReviewed={isBookReviewed}
+                    submitReview={submitReview}/>
                 <hr/>
                 <LatestReviews reviews={reviews} bookId={book?.id} mobile={true}/>
             </div>
